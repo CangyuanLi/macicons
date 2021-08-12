@@ -1,0 +1,15 @@
+{
+    ".git": "gitfolder.png",
+    ".gitignore": "git.png",
+    ".c": "c.png",
+    ".cpp": "cpp.png",
+    ".pyx": "cython.png",
+    ".py": "python.png",
+    ".jl": "julia.png",
+    ".R": "r.png",
+    ".ipynb": "ipynb.png",
+    ".tex": "latex.png",
+    ".txt": "txt.png",
+    ".csv": "csv.png",
+    ".json": "json.png"
+}
