@@ -13,30 +13,38 @@ with open(base_path / 'mapper.json') as f:
 with open(base_path / 'ignorelist.txt', 'r') as f:
     ignorelist = {line.strip() for line in f}
 
+def replace_icon(root, path, key):
+    fullpath = os.path.join(root, path)
+    iconpath = os.path.join(iconfolder, mapper_dict[key])
 
-for root, dirs, files in os.walk(root_path, topdown=True):
-    dirs[:] = [d for d in dirs if d not in ignorelist]
+    subprocess.run(['fileicon', 'set', fullpath, iconpath], stdout=subprocess.DEVNULL)
 
-    for dir in dirs:
-        if dir in mapper_dict: # faster then mapper_dict.keys()
-            dirpath = os.path.join(root, dir)
-            iconpath = os.path.join(iconfolder, mapper_dict[dir])
 
-            subprocess.run(['fileicon', 'set', dirpath, iconpath], stdout=subprocess.DEVNULL)
-    
-    dirs[:] = [d for d in dirs if not d.startswith('.')] # don't check hidden folders
-    
-    for file in files:
-        filename, file_ext = os.path.splitext(file)
+def main(replace_all=False):
+    for root, dirs, files in os.walk(root_path, topdown=True):
+        for dir in dirs:
+            if dir in mapper_dict: # faster then mapper_dict.keys()
+                replace_icon(root=root, path=dir, key=dir)
         
-        if filename in mapper_dict:
-            filepath = os.path.join(root, file)
-            iconpath = os.path.join(iconfolder, mapper_dict[filename])
+        dirs[:] = [d for d in dirs if d not in ignorelist] # don't go through some folders
+        
+        for file in files:
+            if replace_all == True:
+                output = 'NO'
+            elif replace_all == False:
+                output = subprocess.run(['fileicon', 'test', file], capture_output=True).stdout.decode('utf8')
 
-            subprocess.run(['fileicon', 'set', filepath, iconpath], stdout=subprocess.DEVNULL)
+            if 'NO' in output:
+                filename, file_ext = os.path.splitext(file)
+                
+                if filename in mapper_dict:
+                    replace_icon(root=root, path=file, key=filename)
 
-        if file_ext in mapper_dict:
-            filepath = os.path.join(root, file)
-            iconpath = os.path.join(iconfolder, mapper_dict[file_ext])
+                if file_ext in mapper_dict:
+                    replace_icon(root=root, path=file, key=file_ext)
 
-            subprocess.run(['fileicon', 'set', filepath, iconpath], stdout=subprocess.DEVNULL)
+
+if __name__ == '__main__':
+    main(replace_all=True)
+
+
