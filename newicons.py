@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 from pathlib import Path
@@ -19,8 +20,7 @@ def replace_icon(root, path, key):
 
     subprocess.run(['fileicon', 'set', fullpath, iconpath], stdout=subprocess.DEVNULL)
 
-
-def main(replace_all=False):
+def replace_all_icons(dumb):
     for root, dirs, files in os.walk(root_path, topdown=True):
         for dir in dirs:
             if dir in mapper_dict: # faster then mapper_dict.keys()
@@ -29,9 +29,9 @@ def main(replace_all=False):
         dirs[:] = [d for d in dirs if d not in ignorelist] # don't go through some folders
         
         for file in files:
-            if replace_all == True:
+            if dumb == True:
                 output = 'NO'
-            elif replace_all == False:
+            elif dumb == False:
                 output = subprocess.run(['fileicon', 'test', file], capture_output=True).stdout.decode('utf8')
 
             if 'NO' in output:
@@ -43,8 +43,10 @@ def main(replace_all=False):
                 if file_ext in mapper_dict:
                     replace_icon(root=root, path=file, key=file_ext)
 
+def main():
+    replace_all_icons(dumb=False)
 
 if __name__ == '__main__':
-    main(replace_all=True)
+    main()
 
 
