@@ -19,5 +19,5 @@
     ".ts": "typescript.png",
     ".txt": "txt.png",
     ".vscode": "vscode.png",
-    ".xml": "xml.png",
+    ".xml": "xml.png"
 }
