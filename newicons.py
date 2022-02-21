@@ -44,10 +44,12 @@ def replace_file_icon(file, root, dumb):
     if file_ext in mapper_dict:
         replace_icon(root=root, path=file, key=file_ext)
 
-    return
+    return None
 
 def replace_all_icons(root_path=ROOT_PATH, dumb=True, cores=CORES):
+    files_visited = 0
     for root, dirs, files in os.walk(root_path, topdown=True):
+        func = functools.partial(replace_file_icon, root=root, dumb=True)
         for dir in dirs:
             if dir in mapper_dict: # faster then mapper_dict.keys()
                 replace_icon(root=root, path=dir, key=dir)
@@ -56,19 +58,19 @@ def replace_all_icons(root_path=ROOT_PATH, dumb=True, cores=CORES):
         # this is needed for os.walk to ignore these directories
         # when visiting the subsequent subdirectories / files
         dirs[:] = [d for d in dirs if d not in ignorelist]
-
-        func = functools.partial(replace_file_icon, root=root, dumb=True)
         
         with multiprocessing.Pool(processes=cores) as pool:
             pool.map(func, files)
 
-    return None
+        files_visited += len(files)
+
+    return files_visited
 
 def main():
     start = time.perf_counter()
-    replace_all_icons()
+    visited = replace_all_icons()
     end = time.perf_counter()
-    print(f"Finished in {round(end - start, 2)} seconds.")
+    print(f"Visisted {visited} files. Finished in {round(end - start, 2)} seconds.")
 
 if __name__ == "__main__":
     main()
