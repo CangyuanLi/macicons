@@ -14,7 +14,7 @@ import time
 
 BASE_PATH = Path(__file__).parent
 ICONFOLDER = str(BASE_PATH / "icons")
-ROOT_PATH = "/Users/cangyuanli/Documents/Projects/genfunc"
+ROOT_PATH = "/Users/cangyuanli/Documents/Projects"
 
 COUNTER = 0
 
@@ -74,12 +74,19 @@ def replace_all_icons(filelist, dumb=True):
 
     return len(filelist)
 
+def display_time(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+
+    return f"{h} hours, {m} minutes, and {s:.2f} seconds"
+
+
 def main():
     start = time.perf_counter()
     lst = walk_directory()
     numfiles = replace_all_icons(lst)
     end = time.perf_counter()
-    print(f"Visited {numfiles} files and made {COUNTER} changes in {round(end - start, 2)} seconds")
+    print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
 
 if __name__ == "__main__":
     main()
