@@ -14,17 +14,23 @@ import time
 
 BASE_PATH = Path(__file__).parent
 ICONFOLDER = str(BASE_PATH / "icons")
-ROOT_PATH = "/Users/cangyuanli/Documents/Projects"
+ROOT_PATH = "/Users/cangyuanli/Documents/Projects/genfunc"
 
 COUNTER = 0
 
-with open(BASE_PATH / "mapper.json") as f:
-    mapper_dict = json.load(f)
+def read_mapper(path=BASE_PATH):
+    with open(path / "mapper.json") as f:
+        mapper_dict = json.load(f)
 
-with open(BASE_PATH / "ignorelist.txt", "r") as f:
-    ignorelist = {line.strip() for line in f}
+    return mapper_dict
 
-def walk_directory(root_path=ROOT_PATH):
+def read_ignorelist(path=BASE_PATH):
+    with open(path / "ignorelist.txt", "r") as f:
+        ignorelist = {line.strip() for line in f}
+
+    return ignorelist
+
+def walk_directory(ignorelist, mapper_dict, root_path=ROOT_PATH):
     filelist = []
     for root, dirs, files in os.walk(root_path, topdown=True):
         for dir in dirs:
@@ -39,7 +45,7 @@ def walk_directory(root_path=ROOT_PATH):
 
     return filelist
 
-def replace_icon(filepath, dumb, iconfolder=ICONFOLDER):
+def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
     if dumb == True:
         time_since_creation = 0
     elif dumb == False:
@@ -66,8 +72,8 @@ def replace_icon(filepath, dumb, iconfolder=ICONFOLDER):
 
     return None
 
-def replace_all_icons(filelist, dumb=True):
-    func = functools.partial(replace_icon, dumb=dumb)
+def replace_all_icons(filelist, mapper_dict, dumb=True):
+    func = functools.partial(replace_icon, mapper_dict=mapper_dict, dumb=dumb)
 
     with concurrent.futures.ThreadPoolExecutor() as pool:
         pool.map(func, filelist)
@@ -83,12 +89,14 @@ def display_time(seconds):
 
 def main():
     start = time.perf_counter()
-    lst = walk_directory()
-    numfiles = replace_all_icons(lst)
+
+    mapper_dict = read_mapper()
+    ignorelist = read_ignorelist()
+    lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict)
+    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict)
+
     end = time.perf_counter()
     print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
 
 if __name__ == "__main__":
     main()
-
-
