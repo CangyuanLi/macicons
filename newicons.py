@@ -14,7 +14,7 @@ import time
 
 BASE_PATH = Path(__file__).parent
 ICONFOLDER = str(BASE_PATH / "icons")
-ROOT_PATH = "/Users/cangyuanli/Documents/Projects/genfunc"
+ROOT_PATH = "/Users/cangyuanli/Documents"
 
 COUNTER = 0
 
@@ -46,9 +46,9 @@ def walk_directory(ignorelist, mapper_dict, root_path=ROOT_PATH):
     return filelist
 
 def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
-    if dumb == True:
+    if dumb is True:
         time_since_creation = 0
-    elif dumb == False:
+    elif dumb is False:
         time_created = os.path.getctime(filepath)
         time_since_creation = time.time() - time_created
 
@@ -93,7 +93,7 @@ def main():
     mapper_dict = read_mapper()
     ignorelist = read_ignorelist()
     lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict)
-    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict)
+    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=False)
 
     end = time.perf_counter()
     print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
