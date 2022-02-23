@@ -69,7 +69,7 @@ def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
     if dumb is True:
         time_since_creation = 0
     elif dumb is False:
-        time_created = os.path.getctime(filepath)
+        time_created = os.stat(filepath).st_birthtime
         time_since_creation = time.time() - time_created
 
     if time_since_creation < 90_000: # 1 day in unix seconds + a little bit of padding
