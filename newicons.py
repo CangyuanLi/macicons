@@ -18,6 +18,26 @@ ROOT_PATH = "/Users/cangyuanli/Documents"
 
 COUNTER = 0
 
+# Parser
+
+parser = argparse.ArgumentParser(description="Change file icons")
+parser.add_argument(
+    "rootpath",
+    type=str,
+    help="directory to start in"
+)
+
+parser.add_argument(
+    "--dumb",
+    action="store_true",
+    required=False,
+    help="If dumb, does not check the time file was created"
+)
+
+args = parser.parse_args()
+
+# Functions
+
 def read_mapper(path=BASE_PATH):
     with open(path / "mapper.json") as f:
         mapper_dict = json.load(f)
@@ -52,27 +72,29 @@ def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
         time_created = os.path.getctime(filepath)
         time_since_creation = time.time() - time_created
 
-    if time_since_creation < 100000: # 1 day in unix seconds + a little bit of padding
+    if time_since_creation < 90_000: # 1 day in unix seconds + a little bit of padding
         basename = os.path.basename(filepath)
         filename, file_ext = os.path.splitext(basename)
 
-    if file_ext in mapper_dict:
-        iconpath = os.path.join(iconfolder, mapper_dict[file_ext])
-    elif filename in mapper_dict:
-        iconpath = os.path.join(iconfolder, mapper_dict[filename])
+        if file_ext in mapper_dict:
+            iconpath = os.path.join(iconfolder, mapper_dict[file_ext])
+        elif filename in mapper_dict:
+            iconpath = os.path.join(iconfolder, mapper_dict[filename])
+        else:
+            iconpath = None
+
+        if iconpath is not None:
+            subprocess.run(["fileicon", "set", filepath, iconpath], stdout=subprocess.DEVNULL)
+
+            with threading.Lock():
+                global COUNTER
+                COUNTER += 1
     else:
-        iconpath = None
-
-    if iconpath is not None:
-        subprocess.run(["fileicon", "set", filepath, iconpath], stdout=subprocess.DEVNULL)
-
-        with threading.Lock():
-            global COUNTER
-            COUNTER += 1
+        pass
 
     return None
 
-def replace_all_icons(filelist, mapper_dict, dumb=True):
+def replace_all_icons(filelist, mapper_dict, dumb):
     func = functools.partial(replace_icon, mapper_dict=mapper_dict, dumb=dumb)
 
     with concurrent.futures.ThreadPoolExecutor() as pool:
@@ -86,14 +108,15 @@ def display_time(seconds):
 
     return f"{h} hours, {m} minutes, and {s:.2f} seconds"
 
+# Main
 
-def main():
+def main(rootpath=args.rootpath, dumb=args.dumb):
     start = time.perf_counter()
 
     mapper_dict = read_mapper()
     ignorelist = read_ignorelist()
-    lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict)
-    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=False)
+    lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict, root_path=rootpath)
+    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=dumb)
 
     end = time.perf_counter()
     print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
