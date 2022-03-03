@@ -34,6 +34,13 @@ parser.add_argument(
     help="If dumb, does not check the time file was created"
 )
 
+parser.add_argument(
+    "--nice",
+    action="store_true",
+    required=False,
+    help="If nice, sets script to low priority"
+)
+
 args = parser.parse_args()
 
 # Functions
@@ -65,7 +72,10 @@ def walk_directory(ignorelist, mapper_dict, root_path=ROOT_PATH):
 
     return filelist
 
-def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
+def replace_icon(filepath, dumb, nice, mapper_dict, iconfolder=ICONFOLDER):
+    if nice is True:
+        time.sleep(0.01)
+
     if dumb is True:
         time_since_creation = 0
     elif dumb is False:
@@ -94,8 +104,8 @@ def replace_icon(filepath, dumb, mapper_dict, iconfolder=ICONFOLDER):
 
     return None
 
-def replace_all_icons(filelist, mapper_dict, dumb):
-    func = functools.partial(replace_icon, mapper_dict=mapper_dict, dumb=dumb)
+def replace_all_icons(filelist, mapper_dict, dumb, nice):
+    func = functools.partial(replace_icon, mapper_dict=mapper_dict, dumb=dumb, nice=nice)
 
     with concurrent.futures.ThreadPoolExecutor() as pool:
         pool.map(func, filelist)
@@ -110,13 +120,16 @@ def display_time(seconds):
 
 # Main
 
-def main(rootpath=args.rootpath, dumb=args.dumb):
+def main(rootpath=args.rootpath, dumb=args.dumb, nice=args.nice):
     start = time.perf_counter()
 
+    if nice is True:
+        os.nice(19)
+        
     mapper_dict = read_mapper()
     ignorelist = read_ignorelist()
     lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict, root_path=rootpath)
-    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=dumb)
+    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=dumb, nice=nice)
 
     end = time.perf_counter()
     print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
