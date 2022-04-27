@@ -1,5 +1,7 @@
 import argparse
 
+import newicons
+
 def get_parser():
     parser = argparse.ArgumentParser(description="Change file icons")
     parser.add_argument(
@@ -27,4 +29,11 @@ def get_parser():
 def main():
     args = get_parser().parse_args()
 
-    
+    newicons.newicons(
+        rootpath=args.rootpath,
+        dumb=args.dumb,
+        nice=args.nice
+    )
+
+if __name__ == "__main__":
+    main()

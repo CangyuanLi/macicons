@@ -94,7 +94,7 @@ def display_time(seconds):
 
 # Main
 
-def main(rootpath=args.rootpath, dumb=args.dumb, nice=args.nice):
+def newicons(rootpath, dumb, nice):
     start = time.perf_counter()
 
     if nice is True:
@@ -107,6 +107,3 @@ def main(rootpath=args.rootpath, dumb=args.dumb, nice=args.nice):
 
     end = time.perf_counter()
     print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
-
-if __name__ == "__main__":
-    main()
