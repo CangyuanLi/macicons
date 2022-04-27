@@ -1,6 +1,5 @@
 # Imports
 
-import argparse
 import concurrent.futures
 import functools
 import json
@@ -17,31 +16,6 @@ ICONFOLDER = str(BASE_PATH / "icons")
 ROOT_PATH = "/Users/cangyuanli/Documents"
 
 COUNTER = 0
-
-# Parser
-
-parser = argparse.ArgumentParser(description="Change file icons")
-parser.add_argument(
-    "rootpath",
-    type=str,
-    help="directory to start in"
-)
-
-parser.add_argument(
-    "--dumb",
-    action="store_true",
-    required=False,
-    help="If dumb, does not check the time file was created"
-)
-
-parser.add_argument(
-    "--nice",
-    action="store_true",
-    required=False,
-    help="If nice, sets script to low priority"
-)
-
-args = parser.parse_args()
 
 # Functions
 
