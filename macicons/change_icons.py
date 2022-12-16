@@ -18,19 +18,19 @@ COUNTER = 0
 
 # Functions
 
-def read_mapper(path=BASE_PATH):
+def read_mapper(path: Path=BASE_PATH):
     with open(path / "mapper.json") as f:
         mapper_dict = json.load(f)
 
     return mapper_dict
 
-def read_ignorelist(path=BASE_PATH):
+def read_ignorelist(path: Path=BASE_PATH):
     with open(path / "ignorelist.txt", "r") as f:
         ignorelist = {line.strip() for line in f}
 
     return ignorelist
 
-def walk_directory(ignorelist, mapper_dict, root_path):
+def walk_directory(ignorelist: list[str], mapper_dict: dict, root_path: Path):
     filelist = []
     for root, dirs, files in os.walk(root_path, topdown=True):
         for dir in dirs:
@@ -45,7 +45,7 @@ def walk_directory(ignorelist, mapper_dict, root_path):
 
     return filelist
 
-def replace_icon(filepath, dumb, nice, mapper_dict, iconfolder=ICONFOLDER):
+def replace_icon(filepath: Path, dumb: bool, nice: bool, mapper_dict: dict, iconfolder=ICONFOLDER):
     if nice is True:
         time.sleep(0.01)
 
