@@ -1,13 +1,16 @@
 import argparse
+from pathlib import Path
 
-import newicons
+from .change_icons import newicons
 
 def get_parser():
     parser = argparse.ArgumentParser(description="Change file icons")
     parser.add_argument(
         "rootpath",
+        nargs="?",
+        default=Path.home().resolve(),
         type=str,
-        help="directory to start in"
+        help="Directory to start in. Defaults to home path (~)."
     )
 
     parser.add_argument(
@@ -29,7 +32,7 @@ def get_parser():
 def main():
     args = get_parser().parse_args()
 
-    newicons.newicons(
+    newicons(
         rootpath=args.rootpath,
         dumb=args.dumb,
         nice=args.nice

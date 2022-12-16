@@ -11,9 +11,8 @@ import time
 
 # Globals
 
-BASE_PATH = Path(__file__).parent
+BASE_PATH = Path(__file__).resolve().parents[0]
 ICONFOLDER = str(BASE_PATH / "icons")
-ROOT_PATH = "/Users/cangyuanli/Documents"
 
 COUNTER = 0
 
@@ -31,7 +30,7 @@ def read_ignorelist(path=BASE_PATH):
 
     return ignorelist
 
-def walk_directory(ignorelist, mapper_dict, root_path=ROOT_PATH):
+def walk_directory(ignorelist, mapper_dict, root_path):
     filelist = []
     for root, dirs, files in os.walk(root_path, topdown=True):
         for dir in dirs:

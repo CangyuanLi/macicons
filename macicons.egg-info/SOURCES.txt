@@ -1,0 +1,10 @@
+README.md
+setup.py
+macicons/__init__.py
+macicons/change_icons.py
+macicons/cli.py
+macicons.egg-info/PKG-INFO
+macicons.egg-info/SOURCES.txt
+macicons.egg-info/dependency_links.txt
+macicons.egg-info/entry_points.txt
+macicons.egg-info/top_level.txt
