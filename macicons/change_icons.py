@@ -19,13 +19,13 @@ COUNTER = 0
 # Functions
 
 def read_mapper(path: Path=BASE_PATH):
-    with open(path / "mapper.json") as f:
+    with open(path / "data_files/mapper.json") as f:
         mapper_dict = json.load(f)
 
     return mapper_dict
 
 def read_ignorelist(path: Path=BASE_PATH):
-    with open(path / "ignorelist.txt", "r") as f:
+    with open(path / "data_files/ignorelist.txt", "r") as f:
         ignorelist = {line.strip() for line in f}
 
     return ignorelist
