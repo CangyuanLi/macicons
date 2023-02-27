@@ -1,6 +1,7 @@
 MANIFEST.in
 README.md
 setup.py
+macicons/.DS_Store
 macicons/__init__.py
 macicons/change_icons.py
 macicons/cli.py
@@ -32,7 +33,9 @@ macicons/icons/php.png
 macicons/icons/python.png
 macicons/icons/r.png
 macicons/icons/ruby.png
+macicons/icons/toml.png
 macicons/icons/txt.png
 macicons/icons/typescript.png
 macicons/icons/vscode.png
 macicons/icons/xml.png
+macicons/icons/zig.png
