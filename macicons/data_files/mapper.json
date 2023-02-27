@@ -16,8 +16,10 @@
     ".R": "r.png",
     ".rb": "ruby.png",
     ".tex": "latex.png",
+    ".toml": "toml.png",
     ".ts": "typescript.png",
     ".txt": "txt.png",
     ".vscode": "vscode.png",
-    ".xml": "xml.png"
+    ".xml": "xml.png",
+    ".zig": "zig.png"
 }
