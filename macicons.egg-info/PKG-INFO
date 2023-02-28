@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: macicons
-Version: 0.0.6
+Version: 0.0.7
 Summary: CLI utility to change Mac Icons.
 Home-page: https://github.com/CangyuanLi/macicons
 Author: Cangyuan Li
@@ -9,4 +9,3 @@ License: MIT
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
-Requires: tqdm

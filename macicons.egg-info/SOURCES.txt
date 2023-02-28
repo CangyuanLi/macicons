@@ -9,6 +9,7 @@ macicons.egg-info/PKG-INFO
 macicons.egg-info/SOURCES.txt
 macicons.egg-info/dependency_links.txt
 macicons.egg-info/entry_points.txt
+macicons.egg-info/requires.txt
 macicons.egg-info/top_level.txt
 macicons/__pycache__/__init__.cpython-310.pyc
 macicons/__pycache__/change_icons.cpython-310.pyc
