@@ -14,6 +14,7 @@ setuptools.setup(
             "macicons=macicons.cli:main"
         ]
     },
+    requires=["tqdm"],
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",

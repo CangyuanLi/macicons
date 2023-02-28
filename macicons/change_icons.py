@@ -6,15 +6,14 @@ import json
 import os
 from pathlib import Path
 import subprocess
-import threading
 import time
+
+import tqdm
 
 # Globals
 
 BASE_PATH = Path(__file__).resolve().parents[0]
 ICONFOLDER = str(BASE_PATH / "icons")
-
-COUNTER = 0
 
 # Functions
 
@@ -68,22 +67,23 @@ def replace_icon(filepath: Path, dumb: bool, nice: bool, mapper_dict: dict, icon
 
         if iconpath is not None:
             subprocess.run(["fileicon", "set", filepath, iconpath], stdout=subprocess.DEVNULL)
+            return 1
 
-            with threading.Lock():
-                global COUNTER
-                COUNTER += 1
-    else:
-        pass
-
-    return None
+    return 0
 
 def replace_all_icons(filelist, mapper_dict, dumb, nice):
     func = functools.partial(replace_icon, mapper_dict=mapper_dict, dumb=dumb, nice=nice)
 
-    with concurrent.futures.ThreadPoolExecutor() as pool:
-        pool.map(func, filelist)
+    with tqdm.tqdm(total=len(filelist)) as pbar:
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            futures = [pool.submit(func, file) for file in filelist]
+            
+            total_changed = 0
+            for future in concurrent.futures.as_completed(futures):
+                total_changed += future.result()
+                pbar.update(1)
 
-    return len(filelist)
+    return len(filelist), total_changed
 
 def display_time(seconds):
     m, s = divmod(seconds, 60)
@@ -102,7 +102,7 @@ def newicons(rootpath, dumb, nice):
     mapper_dict = read_mapper()
     ignorelist = read_ignorelist()
     lst = walk_directory(ignorelist=ignorelist, mapper_dict=mapper_dict, root_path=rootpath)
-    numfiles = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=dumb, nice=nice)
+    numfiles, num_changed = replace_all_icons(filelist=lst, mapper_dict=mapper_dict, dumb=dumb, nice=nice)
 
     end = time.perf_counter()
-    print(f"Visited {numfiles} files and made {COUNTER} changes in {display_time(end - start)}.")
+    print(f"Visited {numfiles} files and made {num_changed} changes in {display_time(end - start)}.")
