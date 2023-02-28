@@ -63,11 +63,10 @@ def replace_icon(filepath: Path, dumb: bool, nice: bool, mapper_dict: dict, icon
         elif filename in mapper_dict:
             iconpath = os.path.join(iconfolder, mapper_dict[filename])
         else:
-            iconpath = None
+            return 0
 
-        if iconpath is not None:
-            subprocess.run(["fileicon", "set", filepath, iconpath], stdout=subprocess.DEVNULL)
-            return 1
+        subprocess.run(["fileicon", "set", filepath, iconpath], stdout=subprocess.DEVNULL)
+        return 1
 
     return 0
 
