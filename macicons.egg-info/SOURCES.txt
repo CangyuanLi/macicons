@@ -40,3 +40,4 @@ macicons/icons/typescript.png
 macicons/icons/vscode.png
 macicons/icons/xml.png
 macicons/icons/zig.png
+tests/test.py
