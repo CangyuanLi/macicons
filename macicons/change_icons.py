@@ -13,26 +13,37 @@ import tqdm
 # Globals
 
 BASE_PATH = Path(__file__).resolve().parents[0]
-ICONFOLDER = str(BASE_PATH / "icons")
+ICONFOLDER = BASE_PATH / "icons"
 
 # Functions
 
 
-def read_mapper(path: Path = BASE_PATH):
+def read_mapper(path: Path = BASE_PATH) -> dict[str, str]:
     with open(path / "data_files/mapper.json") as f:
-        mapper_dict = json.load(f)
+        mapper_dict: dict = json.load(f)
 
     return mapper_dict
 
 
-def read_ignorelist(path: Path = BASE_PATH):
+def read_ignorelist(path: Path = BASE_PATH) -> set[str]:
     with open(path / "data_files/ignorelist.txt", "r") as f:
         ignorelist = {line.strip() for line in f}
 
     return ignorelist
 
 
-def walk_directory(ignorelist: list[str], mapper_dict: dict, root_path: Path):
+def initialize_images(mapper: dict, iconfolder: Path) -> dict:
+    final_mapper = dict()
+    for file_ext, icon_name in mapper.items():
+        iconpath = iconfolder / icon_name
+        final_mapper[file_ext] = Cocoa.NSImage.alloc().initWithContentsOfFile_(
+            str(iconpath)
+        )
+
+    return final_mapper
+
+
+def walk_directory(ignorelist: set[str], mapper_dict: dict, root_path: Path):
     filelist = []
     for root, dirs, files in os.walk(root_path, topdown=True):
         for dir in dirs:
@@ -53,7 +64,6 @@ def replace_icon(
     dumb: bool,
     nice: bool,
     mapper_dict: dict,
-    iconfolder: str = ICONFOLDER,
 ):
     if nice is True:
         time.sleep(0.01)
@@ -69,17 +79,15 @@ def replace_icon(
         filename, file_ext = os.path.splitext(basename)
 
         if file_ext in mapper_dict:
-            iconpath = os.path.join(iconfolder, mapper_dict[file_ext])
+            image = mapper_dict[file_ext]
         elif filename in mapper_dict:
-            iconpath = os.path.join(iconfolder, mapper_dict[filename])
+            image = mapper_dict[filename]
         else:
             return 0
 
-        image = Cocoa.NSImage.alloc().initWithContentsOfFile_(iconpath)
         Cocoa.NSWorkspace.sharedWorkspace().setIcon_forFile_options_(
             image, str(filepath), 0
         )
-        # ValueError: NSInvalidArgumentException - -[__NSCFArray objectAtIndex:]: index (1196314760) beyond bounds (52)
 
         return 1
 
@@ -91,17 +99,19 @@ def replace_all_icons(filelist: list[str], mapper_dict: dict, dumb: bool, nice: 
         replace_icon, mapper_dict=mapper_dict, dumb=dumb, nice=nice
     )
 
-    with tqdm.tqdm(total=len(filelist)) as pbar:
-        with concurrent.futures.ThreadPoolExecutor() as pool:
-            futures = [pool.submit(func, file) for file in filelist]
+    # TODO: Fix multi-threaded version
+    # with tqdm.tqdm(total=len(filelist)) as pbar:
+    #     with concurrent.futures.ThreadPoolExecutor() as pool:
+    #         futures = [pool.submit(func, file) for file in filelist]
 
-            total_changed = 0
-            for future in concurrent.futures.as_completed(futures):
-                total_changed += future.result()
-                pbar.update(1)
+    #         total_changed = 0
+    #         for future in concurrent.futures.as_completed(futures):
+    #             total_changed += future.result()
+    #             pbar.update(1)
 
-    for f in filelist:
-        func(f)
+    total_changed = 0
+    for f in tqdm.tqdm(filelist):
+        total_changed += func(f)
 
     return len(filelist), total_changed
 
@@ -119,10 +129,10 @@ def display_time(seconds):
 def newicons(rootpath: Path, dumb: bool, nice: bool):
     start = time.perf_counter()
 
-    if nice is True:
+    if nice:
         os.nice(19)
 
-    mapper_dict = read_mapper()
+    mapper_dict = initialize_images(read_mapper(), iconfolder=ICONFOLDER)
     ignorelist = read_ignorelist()
     lst = walk_directory(
         ignorelist=ignorelist, mapper_dict=mapper_dict, root_path=rootpath
