@@ -14,7 +14,7 @@ setuptools.setup(
             "macicons=macicons.cli:main"
         ]
     },
-    install_requires=["tqdm"],
+    install_requires=["tqdm", "pyobjc-core", "pyobjc-framework-Cocoa"],
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",

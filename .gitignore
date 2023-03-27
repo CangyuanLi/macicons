@@ -8,6 +8,9 @@
 **/.vscode
 **/build
 
+**/.idea
+**/references
+
 **.csv
 **.dta
 **.smcl
