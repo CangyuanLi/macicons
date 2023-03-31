@@ -101,7 +101,7 @@ def replace_all_icons(filelist: list[str], mapper_dict: dict, dumb: bool, nice: 
 
     # TODO: Fix multi-threaded version
     # with tqdm.tqdm(total=len(filelist)) as pbar:
-    #     with concurrent.futures.ThreadPoolExecutor() as pool:
+    #     with concurrent.futures.ThreadPoolExecutor(2) as pool:
     #         futures = [pool.submit(func, file) for file in filelist]
 
     #         total_changed = 0
@@ -143,5 +143,6 @@ def newicons(rootpath: Path, dumb: bool, nice: bool):
 
     end = time.perf_counter()
     print(
-        f"Visited {numfiles} files and made {num_changed} changes in {display_time(end - start)}."
+        f"Visited {numfiles} files and made {num_changed} changes in"
+        f" {display_time(end - start)}."
     )
