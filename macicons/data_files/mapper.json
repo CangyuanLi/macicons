@@ -21,5 +21,7 @@
     ".txt": "txt.png",
     ".vscode": "vscode.png",
     ".xml": "xml.png",
-    ".zig": "zig.png"
+    ".zig": "zig.png",
+    ".cfg": "cfg.png",
+    ".ini": "ini.png"
 }
