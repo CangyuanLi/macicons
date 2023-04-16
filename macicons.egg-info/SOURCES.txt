@@ -23,6 +23,7 @@ macicons/icons/cpp.png
 macicons/icons/csharp.png
 macicons/icons/csv.png
 macicons/icons/cython.png
+macicons/icons/fish.png
 macicons/icons/git.png
 macicons/icons/gitfolder.png
 macicons/icons/ini.png

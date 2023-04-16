@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="macicons",
-    version="0.1.0",
+    version="0.1.1",
     author="Cangyuan Li",
     author_email="everest229@gmail.com",
     description="CLI utility to change Mac Icons.",
