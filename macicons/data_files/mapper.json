@@ -23,5 +23,6 @@
     ".xml": "xml.png",
     ".zig": "zig.png",
     ".cfg": "cfg.png",
-    ".ini": "ini.png"
+    ".ini": "ini.png",
+    ".fish": "fish.png"
 }
